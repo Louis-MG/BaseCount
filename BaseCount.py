@@ -8,6 +8,11 @@ from typing import List, Union, Dict
 
 
 def check_input(fastq_list: List[Union[str, bytes, os.PathLike]]):
+    """
+    Checks if each input file exists.
+    :param fastq_list: list of string or path-like.
+    :return: nothing
+    """
     for i in fastq_list:
         try:
             os.path.isfile(i)
@@ -16,6 +21,11 @@ def check_input(fastq_list: List[Union[str, bytes, os.PathLike]]):
             exit(1)
 
 def create_output(output_path: Union[str, bytes, os.PathLike]):
+    """
+    Creates output directory if it doesn't exist.
+    :param output_path: string of path-like
+    :return: nothing
+    """
     if os.path.isdir(output_path):
         print(f"Warning: output folder '{output_path}'already exists.")
     else:
@@ -27,6 +37,13 @@ def create_output(output_path: Union[str, bytes, os.PathLike]):
 
 def write_output(fastq_file_path: Union[str, bytes, os.PathLike], output_path: Union[str, bytes, os.PathLike],
                  counts: List):
+    """
+    Writes output files to output folder using name of input path.
+    :param fastq_file_path: string of path-like
+    :param output_path: string of path-like
+    :param counts: dictionary of base counts
+    :return: nothing
+    """
     output_count_file = open(output_path + "/" + fastq_file_path.split("/")[-1].rstrip(".gz").rstrip(".fastq") +
                              "_base_counts.tsv", "w")
     output_count_file.write("count_A" + "\t" + "count_T" + "\t" + "count_C" + "\t" + "count_G" + "\n")
@@ -37,6 +54,11 @@ def write_output(fastq_file_path: Union[str, bytes, os.PathLike], output_path: U
 
 
 def compute_frequencies(sequence: str) -> Dict[str, float]:
+    """
+    Computes frequency of bases in sequence.
+    :param sequence: string
+    :return: dictionary of base counts (string to float)
+    """
     freq = dict()
     counts = Counter(sequence)
     freq["A"] = counts['A'] / len(sequence)
@@ -47,6 +69,12 @@ def compute_frequencies(sequence: str) -> Dict[str, float]:
 
 
 def count(fastq_file_path: Union[str, bytes, os.PathLike], output_path: Union[str, bytes, os.PathLike]):
+    """
+    Counts bases in file per sequence.
+    :param fastq_file_path: string of path-like
+    :param output_path: string of path-like
+    :return: nothing
+    """
     print(f"Counting reads in {fastq_file_path}", flush=True)
     results = list()
     if fastq_file_path.endswith(".gz"):
@@ -61,6 +89,10 @@ def count(fastq_file_path: Union[str, bytes, os.PathLike], output_path: Union[st
 
 
 def main():
+    """
+    Main function. Parses arguments and calls count.
+    :return: nothing
+    """
     parser = argparse.ArgumentParser(description="Counts base proportions of each sequences of multiple fasta files in parallel.",
                                      epilog="Ex: python3 BaseCount.py --fasta $(find ./test/*.fastq) --threads 10 --output ./output")
     parser.add_argument("-f", "--fastq", help="Fastq file(s), may be gziped, space-sep.", type=str, required=True, nargs="+")
