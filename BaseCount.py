@@ -46,9 +46,9 @@ def write_output(fastq_file_path: Union[str, bytes, os.PathLike], output_path: U
     """
     output_count_file = open(output_path + "/" + fastq_file_path.split("/")[-1].rstrip(".gz").rstrip(".fastq") +
                              "_base_counts.tsv", "w")
-    output_count_file.write("count_A" + "\t" + "count_T" + "\t" + "count_C" + "\t" + "count_G" + "\n")
+    output_count_file.write("count_A" + "\t" + "count_T" + "\t" + "count_C" + "\t" + "count_G" + "\t" + "count_N" + "\n")
     for i in counts:
-        output_count_file.write(f"{i['A']}\t{i['T']}\t{i['C']}\t{i['G']}\n")
+        output_count_file.write(f"{i['A']}\t{i['T']}\t{i['C']}\t{i['G']}\t{i['N']}\n")
     print(f"Finished writing results for {fastq_file_path}", flush=True)
     output_count_file.close()
 
@@ -65,6 +65,7 @@ def compute_frequencies(sequence: str) -> Dict[str, float]:
     freq["C"] = counts['C'] / len(sequence)
     freq["G"] = counts['G'] / len(sequence)
     freq["T"] = counts['T'] / len(sequence)
+    freq["N"] = counts['N'] / len(sequence)
     return freq
 
 
